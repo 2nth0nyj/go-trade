@@ -22,3 +22,7 @@ func NewClient(clientId, clientSecret, accessToken string, ctid int64, live bool
 func (c Client) GetBalance() string {
 	return c.conn.GetBalance()
 }
+
+func (c Client) Name() string {
+	return "Spotware CTrader"
+}
