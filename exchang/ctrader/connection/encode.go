@@ -3,11 +3,18 @@ package connection
 import (
 	"encoding/binary"
 	"errors"
+	"sync"
 
 	openapi "github.com/2nth0nyj/go-trade/exchang/ctrader/connection/proto"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/proto"
 )
+
+var protoMessagePool = sync.Pool{
+	New: func() interface{} {
+		return &openapi.ProtoMessage{}
+	},
+}
 
 func encode(msg proto.Message) ([]byte, string, error) {
 	var payload []byte
@@ -40,12 +47,11 @@ func encode(msg proto.Message) ([]byte, string, error) {
 	clientMsgId := uuid.New().String()
 	if payload != nil {
 		prototMsgType := uint32(payloadType)
-		protoMsg := openapi.ProtoMessage{
-			PayloadType: &prototMsgType,
-			Payload:     payload,
-			ClientMsgId: &clientMsgId,
-		}
-		if b, e := proto.Marshal(&protoMsg); e == nil {
+		protoMsg := protoMessagePool.Get().(*openapi.ProtoMessage)
+		protoMsg.PayloadType = &prototMsgType
+		protoMsg.Payload = payload
+		protoMsg.ClientMsgId = &clientMsgId
+		if b, e := proto.Marshal(protoMsg); e == nil {
 			protoMessageLength := len(b)
 			protoMessageLengthBytes := make([]byte, 4)
 			binary.BigEndian.PutUint32(protoMessageLengthBytes, uint32(protoMessageLength))

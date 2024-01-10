@@ -198,13 +198,19 @@ func (c *Connection) read() {
 }
 
 func (c *Connection) heartbeat() {
+	f := func() interface{} {
+		heartbeatProtocol := openapi.ProtoHeartbeatEvent{}
+		return &heartbeatProtocol
+	}
+	heartBeatPool := sync.Pool{New: f}
 	for {
 		select {
 		case <-c.closeChan:
 			return
 		default:
-			payloadType := openapi.ProtoPayloadType_HEARTBEAT_EVENT
-			b, _, _ := encode(&openapi.ProtoHeartbeatEvent{PayloadType: &payloadType})
+			h := heartBeatPool.Get().(*openapi.ProtoHeartbeatEvent)
+			b, _, _ := encode(h)
+			heartBeatPool.Put(h)
 			c.writeChan2 <- b
 		}
 		time.Sleep(time.Duration(10 * time.Second))
