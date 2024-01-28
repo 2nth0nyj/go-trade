@@ -27,7 +27,7 @@ func main() {
 		var ctid int64 = 37723713
 		ctrader := ctrader.NewClient(clientId, secret, accessToken, ctid, false)
 		time.Sleep(time.Duration(5 * time.Second))
-		b := ctrader.GetBalance()
+		b := ctrader.Balance()
 		fmt.Printf("ctrader balance %v\n", b)
 		<-c
 	}()

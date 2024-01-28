@@ -7,6 +7,7 @@ import (
 type Client struct {
 	conn              *connection.Connection
 	accountParameters map[string]interface{}
+	balance           *string
 }
 
 func NewClient(clientId, clientSecret, accessToken string, ctid int64, live bool) *Client {
@@ -19,10 +20,15 @@ func NewClient(clientId, clientSecret, accessToken string, ctid int64, live bool
 	}
 }
 
-func (c Client) GetBalance() string {
-	return c.conn.GetBalance()
+func (c Client) Balance() string {
+	if c.balance == nil {
+		balance := c.conn.GetBalance()
+		c.balance = &balance
+		return *c.balance
+	}
+	return *c.balance
 }
 
-func (c Client) Name() string {
+func (c Client) Broker() string {
 	return "Spotware CTrader"
 }

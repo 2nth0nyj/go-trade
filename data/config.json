@@ -1,0 +1,9 @@
+{
+    "exchanges": [{
+        "type": "ctrader",
+        "clientId": "2183_yYYwcVyw40LMplltGPCfbsdBajdICfdrNfSEHSYFkdFbSG4uw1",
+		"secret": "hHt2FxwSBY06bN0bHbI0ESofrLyyCWLha0wr3Gv8fXOBdwlc3s",
+		"accessToken": "X1YIVrgGoDmJK5Ky8qufZ-zAMtlw1jHvokJAFHmarYQ"
+        "refreshToken": ""
+    }]
+}
